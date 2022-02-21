@@ -1,0 +1,29 @@
+@import views.html.helper._
+@(record: Record, statusId: Long, statuses: Seq[Status])(implicit request: RequestHeader)
+
+<tr>
+    <th scope="row">@record.id</th>
+    <td>@record.todoItem</td>
+    <td>
+
+        <form method="post" action = "@routes.ApplicationController.updateRecord()">
+            @CSRF.formField
+            <input type="hidden" name="recordId" value="@record.id" aria-label=""/>
+            <select class="form-select" onchange="this.form.submit()" aria-label="Status" name="statusId">
+                @for(status <- statuses) {
+                    <option @{
+                        if(status.id.get == statusId) {
+                            "selected"
+                        }
+                    } value="@status.id">@status.name</option>
+                }
+            </select>
+        </form>
+    </td>
+    <td>
+    @form(routes.ApplicationController.deleteRecord(record.id.get)) {
+        @CSRF.formField
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash fa-lg"></i></button>
+    }
+    </td>
+</tr>
